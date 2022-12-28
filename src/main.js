@@ -61,10 +61,47 @@ tiles.forEach((tile, index) => {
             tile.innerHTML = game.turn;
             game.turnCount++;
             game.turn = game.turn === "X" ? "O" : "X";
+            document.querySelector("#turn").innerHTML = game.turn + " turn";
             // set the correct miniboard to active
+            const miniBoardElement = document.querySelectorAll(".miniboard")[miniBoardIndex];
+            // set all boards active state to false
+            game.board.content.forEach((board, index) => {
+                board.active = false;
+                // remove active class from all miniboards
+                document.querySelectorAll(".miniboard")[index].classList.remove("active");
+            });
+            miniBoardElement.classList.remove("active");
             game.board.content[tileIndex].active = true;
-            console.log(game);
-            miniBoard.active = false;
+            if (game.board.content[tileIndex].winner) {
+                // set all boards to active
+                game.board.content.forEach((board, index) => {
+                    board.active = true;
+                    // add active class to all miniboards
+                    document.querySelectorAll(".miniboard")[index].classList.add("active");
+                });
+            }
+            document.querySelectorAll(".miniboard")[tileIndex].classList.add("active");
+            checkMiniBoardWinner(miniBoard, miniBoardElement, miniBoardIndex);
+            if (checkMiniBoardDraw(miniBoard)) {
+                miniBoardElement.classList.add("fade-out");
+                setTimeout(() => {
+                    // clear the miniboard
+                    miniBoardElement.innerHTML = "";
+                    // add the tiles back
+                    for (let i = 0; i < 9; i++) {
+                        const tile = document.createElement("div");
+                        tile.classList.add("tile");
+                        miniBoardElement.appendChild(tile);
+                    }
+                    // clear the tiles in the miniboard
+                    miniBoard.content = [];
+                    for (let i = 0; i < 9; i++) {
+                        miniBoard.content = [...miniBoard.content, cloneDeep({ content: "" })];
+                    }
+                    miniBoardElement.classList.remove("fade-out");
+                }, 1000);
+            }
+            // check if the miniboard has a winner
         }
     });
 });
@@ -83,4 +120,73 @@ const winConditions = [
     [0, 4, 8],
     [2, 4, 6],
 ];
+const checkMiniBoardWinner = (miniBoard, miniBoardElement, index) => {
+    let winner = "";
+    for (let i = 0; i < winConditions.length; i++) {
+        const [a, b, c] = winConditions[i];
+        const tileA = miniBoard.content[a];
+        const tileB = miniBoard.content[b];
+        const tileC = miniBoard.content[c];
+        if (tileA.content !== "" && tileA.content === tileB.content && tileA.content === tileC.content) {
+            winner = tileA.content;
+        }
+    }
+    if (winner !== "") {
+        game.board.content[index].winner = winner;
+        // check if the minigrid is selected
+        if (miniBoard.active) {
+            // set all boards to active
+            game.board.content.forEach((board, index) => {
+                board.active = true;
+                // add active class to all miniboards
+                document.querySelectorAll(".miniboard")[index].classList.add("active");
+            });
+        }
+        document.querySelector("#turn").innerHTML = winner + " wins board # " + (index + 1) + "!";
+        setTimeout(() => {
+            document.querySelector("#turn").innerHTML = game.turn + " turn";
+        }, 500);
+        if (checkBoardWinner(game.board) !== "") {
+            // add confetti
+            confetti.addConfetti();
+            setTimeout(() => {
+                document.querySelector("#turn").innerHTML = winner + " wins the game!";
+            }, 600);
+            setTimeout(() => {
+                window.location.reload();
+            }, 10000);
+        }
+        confetti.addConfetti();
+        // fade out the miniboard
+        miniBoardElement.classList.add("fade-out");
+        setTimeout(() => {
+            miniBoardElement.innerHTML = winner;
+            miniBoardElement.classList.remove("fade-out");
+            miniBoardElement.classList.add("center-text");
+        }, 1000);
+        return winner;
+    }
+    return "";
+};
+function checkMiniBoardDraw(miniBoard) {
+    return miniBoard.content.every(tile => tile.content !== "");
+}
+function checkBoardWinner(board) {
+    let winner = "";
+    let newArray = [];
+    for (let i = 0; i < 9; i++) {
+        newArray = [...newArray, board.content[i].winner];
+    }
+    for (let i = 0; i < winConditions.length; i++) {
+        const [a, b, c] = winConditions[i];
+        const tileA = newArray[a];
+        const tileB = newArray[b];
+        const tileC = newArray[c];
+        if (tileA !== "" && tileA === tileB && tileA === tileC) {
+            winner = tileA;
+        }
+    }
+    console.log(newArray);
+    return winner;
+}
 export default game;

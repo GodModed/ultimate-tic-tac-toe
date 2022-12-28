@@ -1,0 +1,181 @@
+:root {
+    --bg: #27264B;
+    --primary: #2F6B61;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--primary);
+    margin: 0;
+}
+
+.center {
+    /* use transform */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#board {
+    /* tic tac toe board */
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-gap: 10px;
+    width: 500px;
+    aspect-ratio: 1/1;
+}
+
+#board>.miniboard {
+    /* tic tac toe board */
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-gap: 10px;
+    border: 5px solid var(--primary);
+    border-radius: 5px;
+    padding: 10px;
+    transition: all 1s ease;
+}
+
+#board>.miniboard>.item {
+    /* tic tac toe board items */
+    border: 5px solid var(--primary);
+    border-radius: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 50px;
+    color: var(--primary);
+    transition: all 0.3s ease;
+    /* center text */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    width: 30px;
+    aspect-ratio: 1/1;
+    cursor: pointer;
+    /* disable selection */
+    user-select: none;
+}
+
+.miniboard>.item:hover {
+    background-color: var(--primary);
+    color: var(--bg) !important;
+}
+
+.miniboard>.item:active {
+    /* push down effect */
+    transform: translateY(2px);
+}
+
+#turn {
+    /* turn indicator */
+    /* uppercase */
+    text-transform: uppercase;
+
+    font-weight: bold;
+    color: var(--primary);
+    /* center text */
+    text-align: center;
+}
+
+/* select */
+::selection {
+    background-color: var(--primary);
+    color: var(--bg);
+    /* cool effects */
+    transition: all 0.3s ease;
+}
+
+.fade-out {
+    /* fade out effect */
+    opacity: 0;
+}
+
+/* center text and change size of text */
+.center-text {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    font-size: 100px;
+    user-select: none;
+}
+
+.active {
+    /* gold border */
+    border: 5px solid #00ff99 !important;
+}
+
+@media screen and (max-height: 600px) {
+    #board {
+        width: 100% !important
+    }
+
+    .item {
+        width: 25px !important;
+    }
+}
+
+@media screen and (max-height: 550px) {
+    .item {
+        width: 20px !important;
+    }
+}
+
+@media screen and (max-height: 500px) {
+    .item {
+        width: 15px !important;
+    }
+}
+
+@media screen and (max-height: 450px) {
+    .item {
+        width: 10px !important;
+    }
+}
+
+@media screen and (max-height: 400px) {
+    .item {
+        width: 5px !important;
+        border-radius: none !important;
+    }
+}
+
+/* activated when width is below or equal to 600px */
+@media screen and (max-width: 600px) {
+    #board {
+        width: 100% !important;
+    }
+    .item {
+        width: 25px !important;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .item {
+        width: 20px !important;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .item {
+        width: 15px !important;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .item {
+        width: 10px !important;
+    }
+}
+
+@media screen and (max-width: 350px) {
+    .item {
+        width: 5px !important;
+        border-radius: none !important;
+    }
+}
